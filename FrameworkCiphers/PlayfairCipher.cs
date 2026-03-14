@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace FrameworkCiphers;
+public class PlayfairCipher : Cipher
+{
+    public override string Encrypt(string text)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override string Decrypt(string text)
+    {
+        throw new NotImplementedException();
+    }
+}
