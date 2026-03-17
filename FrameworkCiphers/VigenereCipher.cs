@@ -6,7 +6,7 @@ namespace FrameworkCiphers;
 
 public class VigenereCipher : Cipher
 {
-    public override string Encrypt(string text, string textoLlave)
+    public override string Encrypt(string text)
     {
         throw new NotImplementedException();
     }

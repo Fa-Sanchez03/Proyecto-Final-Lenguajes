@@ -2,8 +2,15 @@
 using FrameworkCiphers;
 
 Console.WriteLine("Playfair testing\n");
-RunTest("PLAYFAIREXAMPLE", "HIDETHEGOLDINTHETREESTUMP");
-RunTest("MONARCHY", "BALLOON");
+
+//Llave con lo que se va a cifrar el texto
+const string keyUnderTest = "PLAYFAIREXAMPLE";        
+
+//Texto que se va a cifrar
+const string plaintextUnderTest = "HIDETHEGOLDINTHETREESTUMP"; 
+
+RunTest(keyUnderTest, plaintextUnderTest);
+
 Console.WriteLine("Fin del testing\n");
 
 static void RunTest(string key, string plaintext)

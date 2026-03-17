@@ -9,10 +9,6 @@ public class PlayfairCipher : Cipher
     private readonly Dictionary<char, (int Row, int Col)> _positions = new();
     private readonly char _filler;
 
-    public PlayfairCipher() : this("PLAYFAIREXAMPLE")
-    {
-    }
-
     public PlayfairCipher(string key, char filler = 'X')
     {
         if (string.IsNullOrWhiteSpace(key))
