@@ -45,7 +45,29 @@ public class PlayfairCipher : Cipher
 
     public override string Decrypt(string text)
     {
-        throw new NotImplementedException();
+        if (text is null)
+        {
+            throw new ArgumentNullException(nameof(text));
+        }
+
+        var cleaned = CleanInput(text);
+        if (cleaned.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        if (cleaned.Length % 2 != 0)
+        {
+            throw new ArgumentException("Ciphertext must contain an even number of letters after cleaning.", nameof(text));
+        }
+
+        var digraphs = new List<(char First, char Second)>(cleaned.Length / 2);
+        for (var i = 0; i < cleaned.Length; i += 2)
+        {
+            digraphs.Add((cleaned[i], cleaned[i + 1]));
+        }
+
+        return ProcessPairs(digraphs, -1);
     }
 
     private void BuildMatrix(string key)

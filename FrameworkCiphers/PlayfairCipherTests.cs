@@ -1,22 +1,23 @@
 #if DEBUG
+using System;
 using FrameworkCiphers;
 
-Console.WriteLine("Playfair testing\n");
+//Demo de ejemplos
+Console.WriteLine("Playfair cipher demo\n");
 
-//Llave con lo que se va a cifrar el texto
-const string keyUnderTest = "PLAYFAIREXAMPLE";        
+const string key = "PLAYFAIREXAMPLE";
+const string plaintext = "HIDETHEGOLDINTHETREESTUMP";
+const string ciphertext = "BMODZBXDNABEKUDMUIXMMOUVIF";
 
-//Texto que se va a cifrar
-const string plaintextUnderTest = "HIDETHEGOLDINTHETREESTUMP"; 
+var cipher = new PlayfairCipher(key);
 
-RunTest(keyUnderTest, plaintextUnderTest);
+//Encryption
+var encrypted = cipher.Encrypt(plaintext);
+Console.WriteLine($"Encrypting\nKey: {key}\nPlaintext: {plaintext}\nCiphertext: {encrypted}\n");
 
-Console.WriteLine("Fin del testing\n");
+//Decryption
+var decrypted = cipher.Decrypt(ciphertext);
+Console.WriteLine($"Decrypting\nKey: {key}\nCiphertext: {ciphertext}\nPlaintext: {decrypted}\n");
 
-static void RunTest(string key, string plaintext)
-{
-    var cipher = new PlayfairCipher(key);
-    var ciphertext = cipher.Encrypt(plaintext);
-    Console.WriteLine($"Key: {key} | Plain: {plaintext} | Cipher: {ciphertext}");
-}
+Console.WriteLine("Demo finished\n");
 #endif
