@@ -7,7 +7,7 @@ public class CaesarCipher : Cipher
 {
     private readonly int _shift;
 
-    public CaesarCipher(int shift = 3)
+    public CaesarCipher(int shift)
     {
         _shift = NormalizeShift(shift);
     }

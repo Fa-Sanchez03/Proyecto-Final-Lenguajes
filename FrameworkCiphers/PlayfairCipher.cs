@@ -8,6 +8,7 @@ public class PlayfairCipher : Cipher
     private readonly char[,] _matrix = new char[5, 5];
     private readonly Dictionary<char, (int Row, int Col)> _positions = new();
     private readonly char _filler;
+    private readonly char _alternateFiller;
 
     public PlayfairCipher(string key, char filler = 'X')
     {
@@ -23,6 +24,7 @@ public class PlayfairCipher : Cipher
 
         var normalizedFiller = char.ToUpperInvariant(filler);
         _filler = normalizedFiller == 'J' ? 'X' : normalizedFiller;
+        _alternateFiller = _filler == 'X' ? 'Z' : 'X';
 
         BuildMatrix(key);
     }
@@ -67,7 +69,8 @@ public class PlayfairCipher : Cipher
             digraphs.Add((cleaned[i], cleaned[i + 1]));
         }
 
-        return ProcessPairs(digraphs, -1);
+        var raw = ProcessPairs(digraphs, -1);
+        return RemoveArtificialFillers(raw);
     }
 
     private void BuildMatrix(string key)
@@ -202,6 +205,43 @@ public class PlayfairCipher : Cipher
             return _filler;
         }
 
-        return reference == 'X' ? 'Z' : 'X';
+        return _alternateFiller;
+    }
+
+    private string RemoveArtificialFillers(string text)
+    {
+        if (text.Length == 0)
+        {
+            return text;
+        }
+
+        var builder = new StringBuilder(text.Length);
+
+        for (var i = 0; i < text.Length; i++)
+        {
+            var current = text[i];
+            var isInserted = i > 0
+                             && i < text.Length - 1
+                             && (current == _filler || current == _alternateFiller)
+                             && text[i - 1] == text[i + 1];
+
+            if (isInserted)
+            {
+                continue;
+            }
+
+            builder.Append(current);
+        }
+
+        if (builder.Length > 0)
+        {
+            var last = builder[^1];
+            if (last == _filler || last == _alternateFiller)
+            {
+                builder.Length -= 1;
+            }
+        }
+
+        return builder.ToString();
     }
 }

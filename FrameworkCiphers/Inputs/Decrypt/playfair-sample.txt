@@ -1,0 +1,6 @@
+# Playfair decryption example
+cipher: playfair
+key: PLAYFAIREXAMPLE
+filler: X
+text:
+BMODZBXDNABEKUDMUIXMMOUVIF

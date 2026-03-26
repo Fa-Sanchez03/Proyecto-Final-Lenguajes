@@ -1,0 +1,5 @@
+# Vigenere decryption example
+cipher: vigenere
+key: LEMON
+text:
+LXFOPVEFRNHR

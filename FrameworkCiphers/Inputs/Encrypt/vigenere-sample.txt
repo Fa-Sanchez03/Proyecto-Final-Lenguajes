@@ -1,0 +1,5 @@
+# Vigenere encryption example
+cipher: vigenere
+key: LEMON
+text:
+ATTACK AT DAWN

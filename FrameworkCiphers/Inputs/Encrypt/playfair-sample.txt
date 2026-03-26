@@ -1,0 +1,6 @@
+# Playfair encryption example
+cipher: playfair
+key: PLAYFAIREXAMPLE
+filler: X
+text:
+HIDETHE GOLD IN THE TREE STUMP
