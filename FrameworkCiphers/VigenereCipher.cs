@@ -32,7 +32,7 @@ public class VigenereCipher : Cipher
         return Transform(text, NormalizeKey(key), false);
     }
 
-    // Applies per-character Vigenere shifts while skipping non-letter symbols.
+    // Aplica desplazamientos Vigenere por caracter ignorando caractereres que no sean letras.
     private static string Transform(string text, string key, bool encrypt)
     {
         if (text is null)

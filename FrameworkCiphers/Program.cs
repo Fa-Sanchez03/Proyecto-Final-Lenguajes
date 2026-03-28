@@ -4,19 +4,22 @@ using System.Globalization;
 using System.IO;
 using FrameworkCiphers;
 
-// Expected file format inside Inputs/Encrypt or Inputs/Decrypt folders:
+// Formato esperado para los archivos de escenario (.txt):
 // cipher: caesar|vigenere|playfair
 // key: <value>
-// filler: <single letter>   (optional, Playfair only)
+// filler: <single letter>   (optional, solo para Playfair )
 // text:
 // <plain text or cipher text spanning any number of lines>
 
+// Rutas donde estan los archivos para encrypt/decrypt
 const string EncryptDirectory = "Inputs/Encrypt";
 const string DecryptDirectory = "Inputs/Decrypt";
 
+// Verificacion que existan estas rutas, si no existen se crean para que el usuario pueda colocar los archivos de escenario.
 Directory.CreateDirectory(EncryptDirectory);
 Directory.CreateDirectory(DecryptDirectory);
 
+// Indicacion inicial al usuario sobre las rutas de los archivos de entrada para encrypt/decrypt
 Console.WriteLine("=== Cipher Playground ===");
 Console.WriteLine($"Encryption inputs: {Path.GetFullPath(EncryptDirectory)}");
 Console.WriteLine($"Decryption inputs: {Path.GetFullPath(DecryptDirectory)}");
@@ -24,6 +27,7 @@ Console.WriteLine($"Decryption inputs: {Path.GetFullPath(DecryptDirectory)}");
 var exitRequested = false;
 while (!exitRequested)
 {
+	// Menu principal
 	PrintMenu();
 	var choice = ReadTrimmedLine();
 	switch (choice)
@@ -57,6 +61,7 @@ static void PrintMenu()
 
 static void InteractiveFolder(string directory, bool encryptMode)
 {
+	// Obtiene todos los archivos .txt en la carpeta seleccionada.
 	var files = Directory.GetFiles(directory, "*.txt");
 	if (files.Length == 0)
 	{
@@ -67,6 +72,7 @@ static void InteractiveFolder(string directory, bool encryptMode)
 
 	while (true)
 	{
+		// Muestra el listado de archivos disponibles y acciones adicionales.
 		Console.WriteLine();
 		Console.WriteLine($"{(encryptMode ? "Encryption" : "Decryption")} inputs available:");
 		for (var i = 0; i < files.Length; i++)
@@ -90,6 +96,7 @@ static void InteractiveFolder(string directory, bool encryptMode)
 
 		if (string.Equals(selection, "A", StringComparison.OrdinalIgnoreCase))
 		{
+			// Procesa uno por uno todos los archivos detectados.
 			foreach (var file in files)
 			{
 				RunScenarioFile(file, encryptMode);
@@ -101,6 +108,7 @@ static void InteractiveFolder(string directory, bool encryptMode)
 		    && index >= 1
 		    && index <= files.Length)
 		{
+			// Ejecuta el archivo del indice seleccionado por el usuario
 			RunScenarioFile(files[index - 1], encryptMode);
 		}
 		else
@@ -114,8 +122,11 @@ static void RunScenarioFile(string filePath, bool encryptMode)
 {
 	try
 	{
+		// Lee el archivo para verificar que tenga el formato correcto
 		var scenario = ParseScenario(filePath);
+		// Instancia el cifrado correspondiente al input leido
 		var cipher = CreateCipher(scenario);
+		// Ejecuta encrypt/decrypt segun el modo seleccionado por el usuario
 		var result = encryptMode ? cipher.Encrypt(scenario.Text) : cipher.Decrypt(scenario.Text);
 
 		Console.WriteLine();
@@ -132,12 +143,14 @@ static void RunScenarioFile(string filePath, bool encryptMode)
 
 static Scenario ParseScenario(string filePath)
 {
+	// Diccionario para almacenar encabezados como cipher, key y filler.
 	var metadata = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 	var textLines = new List<string>();
 	var inTextBlock = false;
 
 	foreach (var rawLine in File.ReadAllLines(filePath))
 	{
+		// Limpia la línea para facilitar la detección de secciones.
 		var trimmed = rawLine.Trim();
 		if (!inTextBlock)
 		{
@@ -196,6 +209,7 @@ static Scenario ParseScenario(string filePath)
 		throw new InvalidOperationException("Missing text block. Add 'text:' followed by the content to process.");
 	}
 
+	// El relleno solo aplica para el cipher de Playfair, por lo cual es un dato opcional.
 	char? filler = null;
 	if (metadata.TryGetValue("filler", out var fillerValue) && !string.IsNullOrWhiteSpace(fillerValue))
 	{
@@ -208,6 +222,7 @@ static Scenario ParseScenario(string filePath)
 
 static Cipher CreateCipher(Scenario scenario)
 {
+	// Ejecuta la creacion del objeto correspondiente al escenario leido
 	switch (scenario.CipherName.ToLowerInvariant())
 	{
 		case "caesar":
@@ -227,7 +242,9 @@ static Cipher CreateCipher(Scenario scenario)
 
 static string? ReadTrimmedLine()
 {
+	// Centraliza la lectura de entradas removiendo espacios innecesarios
 	return Console.ReadLine()?.Trim();
 }
 
+// Representa la configuración completa descrita en un archivo de escenario.
 readonly record struct Scenario(string CipherName, string Key, string Text, char? Filler);

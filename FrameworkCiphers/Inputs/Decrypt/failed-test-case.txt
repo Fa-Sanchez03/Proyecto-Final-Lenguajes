@@ -1,4 +1,4 @@
-cipher: caesar
+cipher:caesa
 key: 5
 text:
 fyyfhp fy ifbs

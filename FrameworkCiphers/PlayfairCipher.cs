@@ -5,11 +5,16 @@ using System.Text;
 namespace FrameworkCiphers;
 public class PlayfairCipher : Cipher
 {
+    // Matriz 5x5 que contiene las letras del cifrado Playfair.
     private readonly char[,] _matrix = new char[5, 5];
+    // Tabla que mapea cada letra a su posicion dentro de la matriz.
     private readonly Dictionary<char, (int Row, int Col)> _positions = new();
+    // Caracter usado para rellenar cuando faltan letras en un par.
     private readonly char _filler;
+    // Alternativa al filler principal para evitar repeticiones consecutivas.
     private readonly char _alternateFiller;
 
+    // Constructor que valida la llave y prepara la matriz del cifrado.
     public PlayfairCipher(string key, char filler = 'X')
     {
         if (string.IsNullOrWhiteSpace(key))
@@ -29,6 +34,7 @@ public class PlayfairCipher : Cipher
         BuildMatrix(key);
     }
 
+    // Cifra el texto plano aplicando el algoritmo Playfair.
     public override string Encrypt(string plaintext)
     {
         if (plaintext is null)
@@ -45,6 +51,7 @@ public class PlayfairCipher : Cipher
         return ProcessPairs(digraphs, 1);
     }
 
+    // Descifra texto Playfair y remueve rellenos artificiales.
     public override string Decrypt(string text)
     {
         if (text is null)
@@ -73,6 +80,7 @@ public class PlayfairCipher : Cipher
         return RemoveArtificialFillers(raw);
     }
 
+    // Construye la matriz 5x5 utilizando la llave normalizada.
     private void BuildMatrix(string key)
     {
         var seen = new HashSet<char>();
@@ -115,6 +123,7 @@ public class PlayfairCipher : Cipher
         }
     }
 
+    // Separa el texto limpio en pares aplicando reglas de relleno.
     private List<(char First, char Second)> BuildDigraphs(string input)
     {
         var cleaned = CleanInput(input);
@@ -148,6 +157,7 @@ public class PlayfairCipher : Cipher
         return pairs;
     }
 
+    // Aplica las reglas de Playfair a cada par segun la direccion solicitada.
     private string ProcessPairs(IEnumerable<(char First, char Second)> pairs, int direction)
     {
         var builder = new StringBuilder();
@@ -181,6 +191,7 @@ public class PlayfairCipher : Cipher
         return builder.ToString();
     }
 
+    // Normaliza el texto de entrada manteniendo solo letras y reemplazando J por I.
     private string CleanInput(string input)
     {
         var builder = new StringBuilder();
@@ -198,6 +209,7 @@ public class PlayfairCipher : Cipher
         return builder.ToString();
     }
 
+    // Determina el caracter de relleno apropiado para un digrafo.
     private char FillerFor(char reference)
     {
         if (reference != _filler)
@@ -208,6 +220,7 @@ public class PlayfairCipher : Cipher
         return _alternateFiller;
     }
 
+    // Elimina rellenos que fueron agregados solo para separar letras repetidas.
     private string RemoveArtificialFillers(string text)
     {
         if (text.Length == 0)

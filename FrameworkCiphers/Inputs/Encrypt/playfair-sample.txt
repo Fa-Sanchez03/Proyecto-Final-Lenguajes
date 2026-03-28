@@ -1,4 +1,3 @@
-# Playfair encryption example
 cipher: playfair
 key: PLAYFAIREXAMPLE
 filler: X
